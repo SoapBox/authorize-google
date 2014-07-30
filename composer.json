@@ -1,0 +1,30 @@
+{
+    "name": "soapbox/authorize-google",
+    "description": "Google authorization strategy for SoapBox/Authorize.",
+    "keywords": ["authentication", "oauth", "oauth2", "google"],
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Jaspaul Bola",
+            "email": "jaspaul.b@gmail.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "git@github.com:soapbox/authorize.git"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "soapbox/authorize": "dev-master",
+        "illuminate/support": "4.2.*",
+        "google/apiclient": "1.0.4-beta"
+    },
+    "autoload": {
+        "psr-0": {
+            "Soapbox\\AuthorizeGoogle\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
