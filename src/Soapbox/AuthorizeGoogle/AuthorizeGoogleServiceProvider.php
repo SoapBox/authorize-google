@@ -1,6 +1,7 @@
-<?php namespace Soapbox\AuthorizeGoogle;
+<?php namespace SoapBox\AuthorizeGoogle;
 
 use Illuminate\Support\ServiceProvider;
+use SoapBox\Authorize\StrategyFactory;
 
 class AuthorizeGoogleServiceProvider extends ServiceProvider {
 
@@ -28,7 +29,7 @@ class AuthorizeGoogleServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		//
+		StrategyFactory::register('google', 'SoapBox\AuthorizeGoogle\GoogleStrategy');
 	}
 
 	/**

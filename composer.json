@@ -23,7 +23,7 @@
     },
     "autoload": {
         "psr-0": {
-            "Soapbox\\AuthorizeGoogle\\": "src/"
+            "SoapBox\\AuthorizeGoogle\\": "src/"
         }
     },
     "minimum-stability": "stable"

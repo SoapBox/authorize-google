@@ -4,6 +4,8 @@
 ## Getting Started
 - Install [Authorize](http://github.com/soapbox/authorize) into your application
 to use this Strategy.
+- Visit [API Console](code.google.com/apis/console/) and configure your application
+based on the scopes you would like to support.
 
 ## Installation
 Add the following to your `composer.json`
