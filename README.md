@@ -34,9 +34,37 @@ to function
 ### Login
 ```php
 
+use SoapBox\Authorize\Authenticator;
+use SoapBox\Authorize\Exceptions\InvalidStrategyException;
+...
+$settings = [
+	'application_name' => 'set_this_on_dev_console',
+	'id' => 'get_this_from_google',
+	'secret' => 'get_this_from_google',
+	'redirect_url' => 'http://example.com/social/google/callback',
+	'developer_key' => 'get_this_from_google'
+];
+
+//If you already have an accessToken from a previous authentication attempt
+$parameters = ['accessToken' => 'sometoken'];
+
+$strategy = new Authenticator('google', $settings);
+
+$user = $strategy->authenticate($parameters);
+
 ```
 
 ### Endpoint
 ```php
+
+use SoapBox\Authroize\Authenticator;
+use SoapBox\Authorize\Exceptions\InvalidStrategyException;
+...
+$settings = [
+	'code' => 'this_is_posted_by_google_to_the_specified_redirect_url'
+];
+
+$strategy = new Authenticator('google', $settings);
+$user = $strategy->endpoint();
 
 ```
