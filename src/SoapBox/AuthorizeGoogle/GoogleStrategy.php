@@ -38,6 +38,9 @@ class GoogleStrategy extends SingleSignOnStrategy {
 		$client->setClientSecret($settings['secret']);
 		$client->setRedirectUri($settings['redirect_url']);
 		$client->setDeveloperKey($settings['developer_key']);
+		if (isset($settings['state'])) {
+			$client->setState($settings['state']);
+		}
 
 		$this->client = $client;
 		$this->clientId = $settings['id'];
