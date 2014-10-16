@@ -13,6 +13,7 @@ class GoogleStrategy extends SingleSignOnStrategy {
 	 */
 	private $scope = array('https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email', 'https://www.google.com/m8/feeds/');
 
+	private $state;
 	private $google;
 	private $client;
 	private $clientId;
@@ -39,7 +40,7 @@ class GoogleStrategy extends SingleSignOnStrategy {
 		$client->setRedirectUri($settings['redirect_url']);
 		$client->setDeveloperKey($settings['developer_key']);
 		if (isset($settings['state'])) {
-			$client->setState($settings['state']);
+			$this->state = $settings['state'];
 		}
 
 		$this->client = $client;
@@ -59,7 +60,11 @@ class GoogleStrategy extends SingleSignOnStrategy {
 	 * @return User A mixed array repreesnting the authenticated user.
 	 */
 	public function login($parameters = array()) {
-		Helpers::redirect($this->google->createAuthUrl(implode(' ', $this->scope)));
+		if (isset($this->state)) {
+			Helpers::redirect($this->google->createAuthUrl(implode(' ', $this->scope)) . '&state=' . $this->state);
+		} else {
+			Helpers::redirect($this->google->createAuthUrl(implode(' ', $this->scope)));
+		}
 	}
 
 	/**
