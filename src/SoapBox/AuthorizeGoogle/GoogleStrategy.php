@@ -32,13 +32,26 @@ class GoogleStrategy extends SingleSignOnStrategy {
 	 * @param callable $load A callback that will return a value stored with the
 	 *	provided key.
 	 */
-	public function __construct($settings = array(), $store = null, $load = null) {
+	public function __construct($settings = []) {
+		if( !isset($settings['application_name']) ||
+			!(
+				(isset($settings['id']) && isset($settings['secret'])) || isset($settings['developer_key'])
+			) ||
+			!isset($settings['redirect_url']) ) {
+			throw new MissingArgumentsException(
+				'Required parameters application_name, [id and secret] or developer_key, or redirect_url are missing'
+			);
+		}
+
 		$client = new \Google_Client();
 		$client->setApplicationName($settings['application_name']);
-		$client->setClientId($settings['id']);
-		$client->setClientSecret($settings['secret']);
 		$client->setRedirectUri($settings['redirect_url']);
-		$client->setDeveloperKey($settings['developer_key']);
+		if (isset($setting['id']) && isset($setting['secret'])) {
+			$client->setClientId($settings['id']);
+			$client->setClientSecret($settings['secret']);
+		} else {
+			$client->setDeveloperKey($settings['developer_key']);
+		}
 		if (isset($settings['state'])) {
 			$this->state = $settings['state'];
 		}
@@ -49,17 +62,12 @@ class GoogleStrategy extends SingleSignOnStrategy {
 	}
 
 	/**
-	 * Used to authenticate our user through one of the various methods.
+	 * Used to authenticate our user with Google OAuth. Redirects user to Google's
+	 * authentication page.
 	 *
-	 * @param array parameters array('access_token' => string,
-	 *	'redirect_url' => string)
-	 *
-	 * @throws AuthenticationException If the provided parameters do not
-	 *	successfully authenticate.
-	 *
-	 * @return User A mixed array repreesnting the authenticated user.
+	 * @param array parameters []
 	 */
-	public function login($parameters = array()) {
+	public function login($parameters = []) {
 		if (isset($this->state)) {
 			Helpers::redirect($this->google->createAuthUrl(implode(' ', $this->scope)) . '&state=' . $this->state);
 		} else {
