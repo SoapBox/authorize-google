@@ -89,6 +89,8 @@ class GoogleStrategy extends SingleSignOnStrategy {
 	public function getUser($parameters = array()) {
 		if (isset($parameters['accessToken'])) {
 			$this->client->setAccessToken($parameters['accessToken']);
+		} else if (isset($parameters['code'])) {
+			$this->client->authenticate($parameters['code']);
 		}
 
 		if ($this->client->getAccessToken()) {
@@ -128,6 +130,8 @@ class GoogleStrategy extends SingleSignOnStrategy {
 	public function getFriends($parameters = array()) {
 		if (isset($parameters['accessToken'])) {
 			$this->client->setAccessToken($parameters['accessToken']);
+		} else if (isset($parameters['code'])) {
+			$this->client->authenticate($parameters['code']);
 		}
 
 		if ($this->client->getAccessToken()) {
@@ -164,18 +168,6 @@ class GoogleStrategy extends SingleSignOnStrategy {
 			return $friends;
 		}
 		throw new AuthenticationException();
-	}
-
-	/**
-	 * Used to handle tasks after login. This could include retrieving our users
-	 * token after a successful authentication.
-	 *
-	 * @return array Mixed array of the tokens and other components that
-	 *	validate our user.
-	 */
-	public function endpoint($parameters = array()) {
-		$this->client->authenticate($parameters['code']);
-		return $this->getUser(['accessToken' => $this->client->getAccessToken()]);
 	}
 
 }
