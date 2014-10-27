@@ -10,7 +10,7 @@ class AuthorizeGoogleServiceProvider extends ServiceProvider {
 	 *
 	 * @var bool
 	 */
-	protected $defer = false;
+	protected $defer = true;
 
 	/**
 	 * Bootstrap the application events.
@@ -27,9 +27,11 @@ class AuthorizeGoogleServiceProvider extends ServiceProvider {
 	 *
 	 * @return void
 	 */
-	public function register()
-	{
-		StrategyFactory::register('google', 'SoapBox\AuthorizeGoogle\GoogleStrategy');
+	public function register() {
+		$this->app->bind(
+			'soapbox.authorize.google',
+			'SoapBox\AuthorizeGoogle\GoogleStrategy'
+		);
 	}
 
 	/**
@@ -37,9 +39,8 @@ class AuthorizeGoogleServiceProvider extends ServiceProvider {
 	 *
 	 * @return array
 	 */
-	public function provides()
-	{
-		return array();
+	public function provides() {
+		return ['soapbox.authorize.google'];
 	}
 
 }
