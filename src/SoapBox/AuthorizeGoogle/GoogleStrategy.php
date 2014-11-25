@@ -3,6 +3,8 @@
 use SoapBox\Authorize\Helpers;
 use SoapBox\Authorize\User;
 use SoapBox\Authorize\Contact;
+use SoapBox\Authorize\Session;
+use SoapBox\Authorize\Router;
 use SoapBox\Authorize\Exceptions\AuthenticationException;
 use SoapBox\Authorize\Strategies\SingleSignOnStrategy;
 
@@ -18,6 +20,9 @@ class GoogleStrategy extends SingleSignOnStrategy {
 	private $client;
 	private $clientId;
 
+	private $session;
+	private $router;
+
 	/**
 	 * Initializes the Google Authentication with our id and secret
 	 *
@@ -28,11 +33,10 @@ class GoogleStrategy extends SingleSignOnStrategy {
 	 *		'redirect_url' => string,
 	 *		'developer_key' => string
 	 *	]
-	 * @param callable $store A callback that will store a KVP (Key Value Pair).
-	 * @param callable $load A callback that will return a value stored with the
-	 *	provided key.
+	 * @param Session $session Provides the strategy a place to store / retrieve data
+	 * @param Router $router Provides the strategy a mechanism to redirect users
 	 */
-	public function __construct($settings = []) {
+	public function __construct(array $settings = [], Session $session, Router $router) {
 		if( !isset($settings['application_name']) ||
 			!(
 				(isset($settings['id']) && isset($settings['secret'])) || isset($settings['developer_key'])
@@ -42,6 +46,9 @@ class GoogleStrategy extends SingleSignOnStrategy {
 				'Required parameters application_name, [id and secret] or developer_key, or redirect_url are missing'
 			);
 		}
+
+		$this->session = $session;
+		$this->router = $router;
 
 		$client = new \Google_Client();
 		$client->setApplicationName($settings['application_name']);
@@ -67,12 +74,22 @@ class GoogleStrategy extends SingleSignOnStrategy {
 	 *
 	 * @param array parameters []
 	 */
-	public function login($parameters = []) {
+	public function login(array $parameters = []) {
 		if (isset($this->state)) {
-			Helpers::redirect($this->google->createAuthUrl(implode(' ', $this->scope)) . '&state=' . $this->state);
+			$this->router->redirect($this->google->createAuthUrl(implode(' ', $this->scope)) . '&state=' . $this->state);
 		} else {
-			Helpers::redirect($this->google->createAuthUrl(implode(' ', $this->scope)));
+			$this->router->redirect($this->google->createAuthUrl(implode(' ', $this->scope)));
 		}
+	}
+
+	/**
+	 * In order to pass authentication this class requires that it be passed a
+	 * 'code' from the service utilizing it.
+	 *
+	 * @return string[] The list of parameters required to authenticate with google
+	 */
+	public function expects() {
+		return ['code'];
 	}
 
 	/**
@@ -86,7 +103,7 @@ class GoogleStrategy extends SingleSignOnStrategy {
 	 *
 	 * @return User A mixed array representing the authenticated user.
 	 */
-	public function getUser($parameters = array()) {
+	public function getUser(array $parameters = []) {
 		if (isset($parameters['accessToken'])) {
 			$this->client->setAccessToken($parameters['accessToken']);
 		} else if (isset($parameters['code'])) {
@@ -127,7 +144,7 @@ class GoogleStrategy extends SingleSignOnStrategy {
 	 *
 	 * @return array A list of userId's that are friends of this user.
 	 */
-	public function getFriends($parameters = array()) {
+	public function getFriends(array $parameters = []) {
 		if (isset($parameters['accessToken'])) {
 			$this->client->setAccessToken($parameters['accessToken']);
 		} else if (isset($parameters['code'])) {
