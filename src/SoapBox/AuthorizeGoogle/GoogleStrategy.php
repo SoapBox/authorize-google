@@ -100,6 +100,7 @@ class GoogleStrategy extends SingleSignOnStrategy {
 			$user->accessToken = $this->client->getAccessToken();
 			$user->firstname = $googleUser['name']['givenName'];
 			$user->lastname = $googleUser['name']['familyName'];
+			$user->locale = $googleUser->language;
 
 			return $user;
 		}
