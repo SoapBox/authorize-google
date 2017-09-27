@@ -26,7 +26,8 @@ class GoogleStrategy extends SingleSignOnStrategy {
 	 *		'id' => string,
 	 *		'secret' => string,
 	 *		'redirect_url' => string,
-	 *		'developer_key' => string
+	 *		'developer_key' => string,
+	 *		'scope' => array
 	 *	]
 	 * @param callable $store A callback that will store a KVP (Key Value Pair).
 	 * @param callable $load A callback that will return a value stored with the
