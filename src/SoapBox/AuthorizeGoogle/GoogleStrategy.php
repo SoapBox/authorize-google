@@ -42,6 +42,9 @@ class GoogleStrategy extends SingleSignOnStrategy {
 		if (isset($settings['state'])) {
 			$this->state = $settings['state'];
 		}
+		if (isset($settings['scope'])) {
+			$this->scope = $settings['scope'];
+		}
 
 		$this->client = $client;
 		$this->clientId = $settings['id'];
