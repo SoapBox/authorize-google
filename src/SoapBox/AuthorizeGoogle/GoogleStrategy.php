@@ -26,7 +26,8 @@ class GoogleStrategy extends SingleSignOnStrategy {
 	 *		'id' => string,
 	 *		'secret' => string,
 	 *		'redirect_url' => string,
-	 *		'developer_key' => string
+	 *		'developer_key' => string,
+	 *		'scope' => array
 	 *	]
 	 * @param callable $store A callback that will store a KVP (Key Value Pair).
 	 * @param callable $load A callback that will return a value stored with the
@@ -41,6 +42,9 @@ class GoogleStrategy extends SingleSignOnStrategy {
 		$client->setDeveloperKey($settings['developer_key']);
 		if (isset($settings['state'])) {
 			$this->state = $settings['state'];
+		}
+		if (isset($settings['scope'])) {
+			$this->scope = $settings['scope'];
 		}
 
 		$this->client = $client;
